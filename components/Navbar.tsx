@@ -1,55 +1,65 @@
-import { auth, signIn, signOut } from "@/auth";
-import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import Image from "next/image";
+import { auth, signOut, signIn } from "@/auth";
+import { BadgePlus, LogOut } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-export default async function Navbar() {
+const Navbar = async () => {
   const session = await auth();
-  // console.log("session",session);
+
   return (
     <header className="px-5 py-3 bg-white shadow-sm font-work-sans">
       <nav className="flex justify-between items-center">
-        <Link href={"/"}>
-          <Image src="/logo.png" alt="logo" width={100} height={50} />
+        <Link href="/">
+          <Image src="/logo.png" alt="logo" width={144} height={30} />
         </Link>
+
         <div className="flex items-center gap-5 text-black">
           {session && session?.user ? (
             <>
-              <Link href={"/startup/create"}>
-                <p>Create</p>
+              <Link href="/startup/create">
+                <span className="max-sm:hidden">Create</span>
+                <BadgePlus className="size-6 sm:hidden" />
               </Link>
-              <form action={async ()=>{
-                "use server";
-                await signOut({redirectTo: "/"});
-              }}>
+
+              <form
+                action={async () => {
+                  "use server";
+
+                  await signOut({ redirectTo: "/" });
+                }}
+              >
                 <button type="submit">
-                  Sign Out
+                  <span className="max-sm:hidden">Logout</span>
+                  <LogOut className="size-6 sm:hidden text-red-500" />
                 </button>
               </form>
-              <Link href={`/user/${session.user.name}`}>
-                <p>{session.user.name}</p>
+
+              <Link href={`/user/${session?.id}`}>
+                <Avatar className="size-10">
+                  <AvatarImage
+                    src={session?.user?.image || ""}
+                    alt={session?.user?.name || ""}
+                  />
+                  <AvatarFallback>AV</AvatarFallback>
+                </Avatar>
               </Link>
             </>
           ) : (
-
-            // here we are using a form to submit the request to the server
-            // we are using the async function to make the request to the server and passing serverFunction in action of form for further details 
-            // refer to Readme.md qustion no. 2
-
             <form
               action={async () => {
                 "use server";
-                // console.log("im called")
+
                 await signIn("github");
               }}
             >
-              <button type="submit" className="text-gray-700">
-                Sign In
-              </button>
+              <button type="submit">Login</button>
             </form>
           )}
         </div>
       </nav>
     </header>
   );
-}
+};
+
+export default Navbar;
