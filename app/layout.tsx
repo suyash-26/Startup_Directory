@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-// import "easymde/dist/easymde.min.css";
-// import { Toaster } from "@/components/ui/toaster";
+import "easymde/dist/easymde.min.css";
+import { Toaster } from "@/components/ui/toaster";
+
 
 
 // we have defined our local font to be used here 
@@ -72,7 +73,7 @@ export default function RootLayout({
       {/* applying the declared font on root level */}
       <body className={workSans.variable}>
         {children}
-        {/* <Toaster /> */}
+        <Toaster />
       </body>
     </html>
   );
